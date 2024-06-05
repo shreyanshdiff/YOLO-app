@@ -78,8 +78,8 @@ def real_time_detection():
     def video_frame_callback(frame):
         # Placeholder function, replace with actual processing code
         img = frame.to_ndarray(format="bgr24")
-        # Perform object detection on 'img' here
-        return img  # Return the processed frame
+        pred_img = yolo.predictions(img)
+        return av.VideoFrame.from_ndarray(pred_img,  format = "bgr24")  # Return the processed frame
 
     webrtc_streamer(key="example", video_frame_callback=video_frame_callback)
 
