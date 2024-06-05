@@ -2,6 +2,8 @@ import streamlit as st
 from yolo_predictions import YOLO_Pred
 from PIL import Image
 import numpy as np
+import av
+from streamlit_webrtc import webrtc_streamer
 
 st.set_page_config(page_title="Home", layout='wide')
 
@@ -22,9 +24,6 @@ if st.button('YOLO GitHub'):
     st.write(f'<meta http-equiv="refresh" content="0; url={url}">', unsafe_allow_html=True)
 
 st.info("Made by: Shreyansh Singh")
-
-# options = ["YOLO for Images", "YOLO real-time detection"]
-# choice = st.sidebar.selectbox("Choose an option", options)
 
 # Load YOLO model once
 with st.spinner('Please wait while your model is loading'):
@@ -76,19 +75,17 @@ def image_detection():
 def real_time_detection():
     st.title("YOLO Real-Time Detection")
 
-    import av
-    from streamlit_webrtc import webrtc_streamer
-
     def video_frame_callback(frame):
         img = frame.to_ndarray(format="bgr24")
         pred_img = yolo.predictions(img)
         return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
 
     webrtc_streamer(key="example", video_frame_callback=video_frame_callback)
-    
-    
-choice = ["YOLO for Images" , "YOLO real-time detection"]
-    
+
+# Sidebar options
+options = ["YOLO for Images", "YOLO real-time detection"]
+choice = st.sidebar.selectbox("Choose an option", options)
+
 if choice == "YOLO for Images":
     image_detection()
 elif choice == "YOLO real-time detection":
